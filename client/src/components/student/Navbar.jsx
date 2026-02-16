@@ -58,7 +58,7 @@ const Navbar = () => {
         </div>
         <div className="hidden md:flex items-center gap-5 text-gray-500">
           <div className="flex items-center gap-5">
-            {user && user.primaryEmailAddress?.emailAddress !== 'upadhyaykumar2003@gmail.com' && (
+            {user && user.primaryEmailAddress?.emailAddress !== 'manavchaudhary060705@gmail.com' && (
               <>
                 {isEducator ? (
                   <Link to='/educator' className='bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-md hover:shadow-xl hover:shadow-blue-400/30 transition-all duration-300 ease-in-out transform hover:scale-105'>
@@ -76,7 +76,7 @@ const Navbar = () => {
                 )}
               </>
             )}
-            {user && user.primaryEmailAddress?.emailAddress === 'upadhyaykumar2003@gmail.com' && (
+            {user && user.primaryEmailAddress?.emailAddress === 'manavchaudhary060705@gmail.com' && (
               <>
                 <Link to="/admin/dashboard" className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-md hover:shadow-xl hover:shadow-purple-400/30 transition-all duration-300 ease-in-out transform hover:scale-105">Admin Dashboard</Link>
               </>
@@ -97,3 +97,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
