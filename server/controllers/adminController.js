@@ -6,8 +6,9 @@ import EducatorRequest from '../models/EducatorRequest.js';
 const checkAdmin = async (userId) => {
     try {
         const user = await clerkClient.users.getUser(userId);
-        const email = user.emailAddresses?.[0]?.emailAddress;
-        return email === process.env.ADMIN_EMAIL;
+        const email = (user.emailAddresses?.[0]?.emailAddress || '').trim().toLowerCase();
+        const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+        return !!email && !!adminEmail && email === adminEmail;
     } catch (error) {
         return false;
     }

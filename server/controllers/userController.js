@@ -1,19 +1,36 @@
 import Stripe from "stripe";
+import { clerkClient } from "@clerk/express";
 import Course from "../models/Course.js";
 import { CourseProgress } from "../models/CourseProgress.js";
 import { Purchase } from "../models/Purchase.js";
 import User from "../models/User.js";
+
+const ensureLocalUser = async (userId) => {
+    let user = await User.findById(userId);
+    if (user) return user;
+
+    const clerkUser = await clerkClient.users.getUser(userId);
+    const email = clerkUser.emailAddresses?.[0]?.emailAddress || "";
+    const name = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User";
+    const imageUrl = clerkUser.imageUrl || "";
+
+    user = await User.create({
+        _id: userId,
+        email,
+        name,
+        imageUrl,
+        enrolledCourses: [],
+    });
+
+    return user;
+}
 
 
 // Get User Data
 export const getUserData = async (req, res) => {
     try {
         const userId = req.auth.userId;
-        const user = await User.findById(userId);
-
-        if(!user){
-            return res.json({ success: false, message: 'User Not Found' })
-        }
+        const user = await ensureLocalUser(userId);
 
         res.json({ success: true, user })
 
@@ -27,6 +44,7 @@ export const getUserData = async (req, res) => {
 export const userEnrolledCourses = async (req, res) => {
     try {
         const userId = req.auth.userId;
+        await ensureLocalUser(userId);
         const userData = await User.findById(userId).populate('enrolledCourses');
 
         if (!userData) {
@@ -47,7 +65,7 @@ export const purchaseCourse = async (req, res) => {
         const { courseId } = req.body;
         const { origin } = req.headers;
         const userId = req.auth.userId;
-        const userData = await User.findById(userId);
+        const userData = await ensureLocalUser(userId);
         const courseData = await Course.findById(courseId);
 
         if(!userData || !courseData){
